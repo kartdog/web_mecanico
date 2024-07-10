@@ -1,0 +1,56 @@
+obligatorio:
+	* carrusel, navbar, modal, card, imagenes.
+	* debe estar en la nube
+	* mensajes usuario (sweetalert2)
+	* responsiva
+	* API REST Framework django
+	* 2 APIS (obligatorio: mindicador.cl)
+	* Paginador
+	* AXES: bloque por minutos, ventana de bloqueo, reseteo de contador, limite de intentos.
+	* Formularios con CAPTCHA
+	* Hosting
+	* Voucher PDF
+	* Recuperar contraseña
+	* Metodo de pago
+	* Carrito
+	
+	* Hosting	ultimo!
+	* Paginador	despues de api
+	* API		sure
+	* Carrito	falta persistencia
+	* AXES		sure
+	* Paypal	despues de persistencia
+	* PDF		despues de paypal
+
+	* Quedaste en incorporar api dolar a precio productos.
+	* Hay un error en categorias.
+
+	( FALTA POR ORDEN )
+	* Eliminar carrito despues de compra y pdf mostrar	CHECK!
+	* AXES												CHECK!
+	* CAPTCHA											CHECK!
+	* Paginador											CHECK!
+	* Agregar permisos
+	* carrusel y pág principal completar
+	* Hosting
+	* # sweetalert2 a servicios
+	* # Recuperar contra
+	
+	admin
+	admin
+	
+	usuario
+	contra123
+
+
+	https://sandbox.paypal.com
+	TIENDA:
+	sb-rexls31270066@business.example.com
+	;jbSY8R!
+
+	CLIENTE ID:
+	ARmE2Xorf59Z7qluYglYGObPne7X6Aix-JFIEXOuiRwYjWkC18L5PfsbPSjFtZpojy6ep35Wa7SrOAyE
+
+	CLIENTE:
+	sb-ib2cy31401957@personal.example.com
+	O=>ivVJ4

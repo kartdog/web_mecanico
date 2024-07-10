@@ -1,0 +1,49 @@
+{% extends 'base.html' %}
+{% block content %}
+
+    <!-- Header -->
+    <header class="bg-dark py-5">
+        <div class="container px-4 px-lg-5 my-5">
+            <div class="text-center text-white">
+                <h1 class="display-4 fw-bolder">Servicios</h1>
+                <p class="lead fw-normal text-white-50 mb-0">agenda un servicio y soluciona tu problema a lo Mechá!</p>
+            </div>
+        </div>
+    </header>
+
+<!-- Empleados -->
+<div class="table-responsive mt-4 mx-3">
+    <table class="table table-bordered">
+        <thead>
+          <tr>
+            <th scope="col">#</th>
+            <th scope="col">Imagen</th>
+            <th scope="col">Tipo</th>
+            <th scope="col">Descripción</th>
+          </tr>
+        </thead>
+        {% for aux in lista %}
+        <tbody>
+          <tr>
+            <th scope="row">1</th>
+            <td><img src="{{ aux.imagen_servicio }}" class="" alt="..." style="width: 30px; height: 30px;"></td>
+            <td>{{ aux.nombre_servicio }}</td>
+            <td>{{ aux.descripcion_servicio }}</td>
+          </tr>
+        </tbody>
+        {% endfor %}
+    </table>
+</div>
+
+<br><br>
+<br><br>
+<br><br>
+<br><br>
+<br><br>
+<br><br>
+<br><br>
+<br><br>
+
+
+
+{% endblock %}

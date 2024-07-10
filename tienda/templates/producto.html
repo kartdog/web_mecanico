@@ -1,0 +1,88 @@
+{% extends 'base.html' %}
+{% block content %}
+
+<!-- Producto -->
+<div class="container">
+    <br>
+    <div class="card mb-3">
+        <div class="row g-0">
+          <div class="col-md-4">
+            <img src="{{ producto.imagen.url }}" class="img-fluid rounded-start" alt="...">
+          </div>
+          <div class="col-md-8">
+            <div class="card-body">
+                <center>
+                    <h5 class="card-title">{{ producto.nombre }}</h5>
+                    <p class="card-text">{{ producto.descripcion }}</p>
+
+                    {% if producto.is_oferta %}
+                        <!-- Sale badge -->
+                        <div class="badge bg-dark text-white position-absolute" style="top: 0.5rem; right: 0.5rem;">Oferta</div>
+                        <strike>
+                            ${{ producto.precio_final }}
+                        </strike>
+                        &nbsp;
+                        ${{ producto.oferta_precio }}
+                    {% else %}
+                        ${{ producto.precio_final }}
+                    {% endif %}
+                    <br>
+                    <br>
+                    
+                    <div class="row justify-content-center">
+                      <div class="col-md-2">Cantidad:</div>
+                      <div class="col-md-2">
+                        <select class="form-select form-select-sm" id="qty-carro">
+                          <option value="1">1</option>
+                          <option value="2">2</option>
+                          <option value="3">3</option>
+                        </select>
+                      </div>
+                    </div>
+
+                    <br>
+                    <br>
+                    <a href="{% url 'index' %}" class="btn btn-secondary">
+                        Volver a inicio
+                    </a>
+                    <button type="button" class="btn btn-secondary" value="{{ producto.id }}" id="carro-agregar">
+                      Agregar al carrito
+                    </button>
+
+                </center>
+            </div>
+          </div>
+        </div>
+      </div>
+</div>
+
+<!-- Error en 'url' por alguna razon. (pero funciona.) -->
+
+<script>
+  $(document).on('click', '#carro-agregar', function(e){
+    e.preventDefault();
+    $.ajax({
+      type: 'POST',
+      url: '{% url 'carro_agregar' %}',
+      data: {
+        producto_id: $('#carro-agregar').val(),
+        producto_qty: $('#qty-carro option:selected').text(),
+        csrfmiddlewaretoken: '{{ csrf_token }}',
+        action: 'post'
+      },
+
+      success: function(json){
+        console.log(json)
+        document.getElementById('carro_cantidad').textContent = json.qty
+        location.reload();
+      },
+
+      error: function(xhr, errmsg, err){
+
+      }
+
+    });
+  })
+</script>
+
+{% endblock %}

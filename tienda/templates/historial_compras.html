@@ -1,0 +1,29 @@
+{% extends 'base.html' %}
+{% block content %}
+    <div class="container mt-5">
+        <h1>Historial de Compras</h1>
+        <div class="list-group">
+            {% if compras %}
+                {% for compra in compras %}
+                    <div class="card mb-3">
+                        <div class="card-body">
+                            <h5 class="card-title">Compra realizada el {{ compra.fecha_compra }}</h5>
+                            <p class="card-text">Total pagado: ${{ compra.total_pagado }}</p>
+                            <ul class="list-group list-group-flush">
+                                {% for cp in compra.compraproducto_set.all %}
+                                    <li class="list-group-item">
+                                        {{ cp.producto.nombre }} - Cantidad: {{ cp.cantidad }} - Precio: ${{ cp.precio }}
+                                    </li>
+                                {% endfor %}
+                            </ul>
+                        </div>
+                    </div>
+                {% endfor %}
+            {% else %}
+                <div class="alert alert-info" role="alert">
+                    No tienes compras realizadas.
+                </div>
+            {% endif %}
+        </div>
+    </div>
+{% endblock %}

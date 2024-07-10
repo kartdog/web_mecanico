@@ -1,0 +1,40 @@
+{% extends 'base.html' %}
+{% block content %}
+
+<div class="d-flex justify-content-center p-3 text-primary-emphasis bg-dark-subtle border border-dark-subtle">
+    <div class="card" style="width: 48rem;">
+        <div class="card-header d-flex justify-content-center mt-1">
+            <h5>Modificar servicio</h5>
+        </div>
+        <div class="card-body">
+            <form action="" method="POST" style="margin: 0 auto;" enctype="multipart/form-data">
+                {% csrf_token %}
+                <div class="form-group row">
+                    <label for="id_nombre" class="col-sm-4 col-form-label">RUT:</label>
+                    <div class="col-sm-4">
+                        {{ form.nombre_servicio }}
+                    </div>
+                </div>
+                <div class="form-group row">
+                    <label for="id_nombre" class="col-sm-4 col-form-label">Nombre:</label>
+                    <div class="col-sm-4">
+                        {{ form.descripcion_servicio }}
+                    </div>
+                </div>
+                <div class="form-group row">
+                    <label for="id_apellido" class="col-sm-4 col-form-label">Apellido:</label>
+                    <div class="col-sm-4">
+                        {{ form.imagen_servicio }}
+                    </div>
+                </div>
+                <div class="d-flex justify-content-center mt-4">
+                    <input type="submit" value="Modificar" class="btn btn-warning mx-1">
+                    <input type="reset" value="Limpiar" class="btn btn-secondary mx-1">
+                </div>
+            </form>
+            <h5 class="mt-3">{{ msj }}</h5>
+        </div>
+    </div>
+</div>
+
+{% endblock %}

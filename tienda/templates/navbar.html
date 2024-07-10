@@ -1,0 +1,58 @@
+{% load static %}
+
+<!-- Navigation -->
+<nav class="navbar navbar-expand-lg navbar-light bg-light border">
+<div class="container px-4 px-lg-5">
+    <img src="{% static 'assets/icon.png' %}" alt="" height="25px" class="mx-2">
+    <a class="navbar-brand" href="{% url 'index' %}">Mechá</a>
+    <button class="navbar-toggler" type="button" data-bs-toggle="collapse" data-bs-target="#navbarSupportedContent" aria-controls="navbarSupportedContent" aria-expanded="false" aria-label="Toggle navigation"><span class="navbar-toggler-icon"></span></button>
+    <div class="collapse navbar-collapse" id="navbarSupportedContent">
+        <ul class="navbar-nav me-auto mb-2 mb-lg-0 ms-lg-4">
+
+            <li class="nav-item dropdown">
+                <a class="nav-link dropdown-toggle" id="navbarDropdown" href="#" role="button" data-bs-toggle="dropdown" aria-expanded="false">Nosotros</a>
+                <ul class="dropdown-menu" aria-labelledby="navbarDropdown">
+                    <li><a class="dropdown-item" href="{% url 'empleados' %}">Empleados</a></li>
+                    <li><a class="dropdown-item" href="{% url 'servicios' %}">Servicios</a></li>
+                </ul>
+            </li>
+
+            <li class="nav-item">
+                <a class="nav-link" href="{% url 'productos' %}">Productos </a>
+            </li>
+
+            {% if user.is_authenticated %}
+                <li class="nav-item dropdown">
+                    <a class="nav-link dropdown-toggle" id="navbarDropdown" href="#" role="button" data-bs-toggle="dropdown" aria-expanded="false">Usuario</a>
+                    <ul class="dropdown-menu" aria-labelledby="navbarDropdown">
+                        <li><a class="dropdown-item" href="{% url 'actualizar_usuario' %}">Perfil</a></li>
+                        <li><a class="dropdown-item" href="{% url 'actualizar_info' %}">Información</a></li>
+                    </ul>
+                </li>
+                <li class="nav-item">
+                    <a class="nav-link" href="{% url 'logout' %}">Cerrar sesión</a>
+                </li>
+            {% else %}
+                <li class="nav-item">
+                    <a class="nav-link" href="{% url 'login' %}">Iniciar sesión</a>
+                </li>
+
+                <li class="nav-item">
+                    <a class="nav-link" href="{% url 'register' %}">Registrarse</a>
+                </li>
+            {% endif %}
+
+        </ul>
+        <form class="d-flex">
+            <a href="{% url 'carro_detalle' %}" class="btn btn-outline-dark">
+                <i class="bi-cart-fill me-1"></i>
+                Carrito
+                <span class="badge bg-dark text-white ms-1 rounded-pill" id="carro_cantidad">
+                    {{ carro | length }}
+                </span>
+            </a>
+            </button>
+        </form>
+    </div>
+</div>
+</nav>

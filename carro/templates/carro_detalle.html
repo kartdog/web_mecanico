@@ -1,0 +1,256 @@
+{% extends 'base.html' %}
+{% block content %}
+    <!-- Header -->
+    <header class="bg-dark py-5">
+        <div class="container px-4 px-lg-5 my-5">
+            <div class="text-center text-white">
+                <h1 class="display-4 fw-bolder">Carrito de compras</h1>
+                <p class="lead fw-normal text-white-50 mb-0">administra tus compras!</p>
+            </div>
+        </div>
+    </header>
+    
+    <br>
+
+    <div class="container">
+        {% if carro_productos %}
+        {% for producto in carro_productos %}
+        <div class="card mb-3">
+            <div class="row g-0">
+              <div class="col-md-4">
+                <img src="{{ producto.imagen.url }}" class="img-fluid rounded-start" alt="...">
+              </div>
+              <div class="col-md-8">
+                <div class="card-body">
+                    <center>
+                        <h5 class="card-title">{{ producto.nombre }}</h5>
+                        <p class="card-text">{{ producto.descripcion }}</p>
+    
+                        {% if producto.is_oferta %}
+                            <!-- Sale badge -->
+                            <div class="badge bg-dark text-white position-absolute" style="top: 0.5rem; right: 0.5rem;">Oferta</div>
+                            <strike>
+                                ${{ producto.precio_final }}
+                            </strike>
+                            &nbsp;
+                            ${{ producto.oferta_precio }}
+                        {% else %}
+                            ${{ producto.precio_final }}
+                        {% endif %}
+                        <br>
+                        <br>
+                        <div class="row justify-content-center">
+                            <div class="col-md-2">Cantidad:</div>
+                            <div class="col-md-2">
+                              <select class="form-select form-select-sm" id="select{{producto.id}}">
+                                
+                                    {% for key, value in cantidades.items %}
+                                        {% if key == producto.id|slugify%}
+                                        <option selected>{{ value }}</option>
+                                        {% endif %}
+                                    {% endfor %}
+
+                                <option value="1">1</option>
+                                <option value="2">2</option>
+                                <option value="3">3</option>
+                              </select>
+                            </div>
+                          </div>
+                        <br>
+                        <br>
+
+                        <button type="button" data-index="{{producto.id}}" class="btn btn-secondary actualizar-carro">
+                          Actualizar carrito
+                        </button>
+
+                        <button type="button" data-index="{{producto.id}}" class="btn btn-danger eliminar-item">
+                          Eliminar
+                        </button>
+                    </center>
+                </div>
+              </div>
+            </div>
+          </div>
+        {% endfor %}
+          <div>
+            <center>
+              Total carrito: {{ total }}
+            </center>
+          </div>
+          <div style="justify-content: center;" class="text-center eliminar-carrito-general" id="paypal-button"></div>
+          <br>
+        {% else %}
+          <div class="alert alert-danger" role="alert">
+            <h3>Tú carrito esta vacio!</h3>
+          </div>        
+          <br><br>
+          <br><br>
+          <br><br>
+          <br><br>
+          <br><br>
+          <br><br>
+          <br><br>
+          <br>
+        {% endif %}
+    </div>
+
+<script src="https://www.paypalobjects.com/api/checkout.js"></script>
+<script>
+  paypal.Button.render({
+    // Configure environment
+    env: 'sandbox',
+    client: {
+    sandbox: 'ARmE2Xorf59Z7qluYglYGObPne7X6Aix-JFIEXOuiRwYjWkC18L5PfsbPSjFtZpojy6ep35Wa7SrOAyE',
+    production: 'demo_production_client_id'
+    },
+
+    // Customize button (optional)
+    locale: 'en_US',
+    style: {
+    size: 'small',
+    color: 'white',
+    shape: 'rect',
+    },
+
+    // Enable Pay Now checkout flow (optional)
+    commit: true,
+
+    // Set up a payment
+    payment: function (data, actions) {
+    return actions.payment.create({
+    transactions: [{
+    amount: {
+    total: '{{ total }}',
+    currency: 'USD'
+    }
+    }]
+    });
+    },
+
+    // Execute the payment
+    onAuthorize: function (data, actions) {
+      return actions.payment.execute().then(function () {
+        // Show a confirmation message to the buyer
+        mostrarPDF();
+        // Ejecutar la eliminación del carrito después de mostrar el mensaje
+        window.alert('Gracias por tú compra!');
+        eliminarCarrito();
+});
+}
+}, '#paypal-button');
+</script>
+
+<script>
+  // Actualizar carro
+  $(document).on('click', '.actualizar-carro', function(e){
+    e.preventDefault();
+
+    var productoid = $(this).data('index')
+    $.ajax({
+      type: 'POST',
+      url: '{% url 'carro_actualizar' %}',
+      data: {
+        producto_id: $(this).data('index'),
+        producto_qty: $('#select' + productoid + ' option:selected').text(),
+        csrfmiddlewaretoken: '{{ csrf_token }}',
+        action: 'post'
+      },
+
+      success: function(json){
+        location.reload();
+      },
+
+      error: function(xhr, errmsg, err){
+
+      }
+
+    });
+  })
+
+  // Eliminar item
+  $(document).on('click', '.eliminar-item', function(e){
+    e.preventDefault();
+
+    // var productoid = $(this).data('index')
+    $.ajax({
+      type: 'POST',
+      url: '{% url 'carro_eliminar' %}',
+      data: {
+        producto_id: $(this).data('index'),
+        csrfmiddlewaretoken: '{{ csrf_token }}',
+        action: 'post'
+      },
+
+      success: function(json){
+        location.reload();
+      },
+
+      error: function(xhr, errmsg, err){
+
+      }
+
+    });
+  })
+
+  $(document).on('click', '.eliminar-carrito-general', function(e) {
+    e.preventDefault();
+
+    $.ajax({
+        type: 'POST',
+        url: '{% url 'carro_eliminar_general' %}',  // Cambia 'carro_eliminar' por 'carro_eliminar_general'
+        data: {
+            csrfmiddlewaretoken: '{{ csrf_token }}',
+            action: 'post'
+        },
+        success: function(json) {
+            location.reload();  // Recargar la página después de eliminar el carrito
+        },
+        error: function(xhr, errmsg, err) {
+            console.error('Error al eliminar el carrito:', errmsg);
+        }
+    });
+  });
+
+  function eliminarCarrito() {
+    $.ajax({
+        type: 'POST',
+        url: '{% url 'carro_eliminar_general' %}',
+        data: {
+            csrfmiddlewaretoken: '{{ csrf_token }}',
+            action: 'post'
+        },
+        success: function(json) {
+            location.reload();  // Recargar la página después de eliminar el carrito
+        },
+        error: function(xhr, errmsg, err) {
+            console.error('Error al eliminar el carrito:', errmsg);
+        }
+    });
+
+    
+}
+
+function mostrarPDF() {
+            $.ajax({
+                type: 'POST',
+                url: '{% url 'generar_pdf' %}',  // Ajusta esta URL según tu configuración
+                data: {
+                    csrfmiddlewaretoken: '{{ csrf_token }}',
+                    action: 'post'
+                },
+                success: function(response) {
+                    console.log('PDF generado con éxito');
+                    // Manejar la respuesta del servidor aquí
+                    // Por ejemplo, abrir el PDF en una nueva ventana
+                    window.open('/pdf/', '_blank');
+                },
+                error: function(xhr, errmsg, err) {
+                    console.error('Error al generar el PDF:', errmsg);
+                }
+            });
+        }
+
+
+</script>
+
+{% endblock %}

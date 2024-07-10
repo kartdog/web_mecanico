@@ -1,0 +1,67 @@
+{% extends 'base.html' %}
+{% block content %}
+
+    <!-- Header -->
+    <header class="bg-dark py-5">
+        <div class="container px-4 px-lg-5 my-5">
+            <div class="text-center text-white">
+                <h1 class="display-4 fw-bolder">Productos</h1>
+                <p class="lead fw-normal text-white-50 mb-0">compra en Machá y siente el fuego!</p>
+            </div>
+        </div>
+    </header>
+
+<!-- Empleados -->
+<div class="table-responsive mt-4 mx-3">
+    <table class="table table-bordered">
+        <thead>
+          <tr>
+            <th scope="col">#</th>
+            <th scope="col">Imagen</th>
+            <th scope="col">Nombre</th>
+            <th scope="col">Descripcion</th>
+          </tr>
+        </thead>
+        {% for aux in page_obj %}
+        <tbody>
+          <tr>
+            <th scope="row">1</th>
+            <td><img src="{{ aux.imagen }}" class="" alt="..." style="width: 30px; height: 30px;"></td>
+            <td>{{ aux.nombre }}</td>
+            <td>{{ aux.descripcion }}</td>
+          </tr>
+        </tbody>
+        {% endfor %}
+    </table>
+</div>
+
+<nav aria-label="Page navigation example">
+    <ul class="pagination justify-content-center">
+        {% if page_obj.has_previous %}
+            <li class="page-item"><a class="page-link" href="?page=1">&laquo; Primera</a></li>
+            <li class="page-item"><a class="page-link" href="?page={{ page_obj.previous_page_number }}">Anterior</a></li>
+        {% endif %}
+
+        {% for num in page_obj.paginator.page_range %}
+            {% if page_obj.number == num %}
+                <li class="page-item active"><a class="page-link" href="#">{{ num }}</a></li>
+            {% elif num > page_obj.number|add:'-5' and num < page_obj.number|add:'5' %}
+                <li class="page-item"><a class="page-link" href="?page={{ num }}">{{ num }}</a></li>
+            {% endif %}
+        {% endfor %}
+
+        {% if page_obj.has_next %}
+            <li class="page-item"><a class="page-link" href="?page={{ page_obj.next_page_number }}">Siguiente</a></li>
+            <li class="page-item"><a class="page-link" href="?page={{ page_obj.paginator.num_pages }}">Último &raquo;</a></li>
+        {% endif %}
+    </ul>
+</nav>
+
+<br><br>
+<br><br>
+<br><br>
+<br><br>
+<br><br>
+<br><br>
+
+{% endblock %}

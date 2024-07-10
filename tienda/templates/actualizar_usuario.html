@@ -1,0 +1,41 @@
+{% extends 'base.html' %}
+{% block content %}
+
+<!-- Header -->
+<header class="bg-dark py-5">
+    <div class="container px-4 px-lg-5 my-5">
+        <div class="text-center text-white">
+            <h1 class="display-4 fw-bolder">Actualizar perfil</h1>
+            <p class="lead fw-normal text-white-50 mb-0">manten tus datos al día!</p>
+        </div>
+    </div>
+</header>
+
+<!-- Acerca de -->
+<div class="container">
+    <div class="row">
+        <center>
+            <div class="col-8">
+                <br>
+                <br>
+                <br>
+                <br>
+
+                <form method="POST" action="{% url 'actualizar_usuario' %}">
+                    {% csrf_token %}
+                    <!-- Input -->
+                    {{ form_usuario.as_p }}
+                    <br>
+                    <button type="submit" class="btn btn-secondary"> Actualizar </button>
+                  </form>
+
+                <br>
+                <br>
+                <br>
+                <br>
+            </div>
+        </center>
+    </div>
+</div>
+
+{% endblock %}
