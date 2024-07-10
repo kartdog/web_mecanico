@@ -131,10 +131,10 @@
     onAuthorize: function (data, actions) {
       return actions.payment.execute().then(function () {
         // Show a confirmation message to the buyer
-        mostrarPDF();
+        guardarHistorialCompra();
+        //window.alert('Gracias por tú compra!');
         // Ejecutar la eliminación del carrito después de mostrar el mensaje
-        window.alert('Gracias por tú compra!');
-        eliminarCarrito();
+        // eliminarCarrito();
 });
 }
 }, '#paypal-button');
@@ -230,25 +230,24 @@
     
 }
 
-function mostrarPDF() {
-            $.ajax({
-                type: 'POST',
-                url: '{% url 'generar_pdf' %}',  // Ajusta esta URL según tu configuración
-                data: {
-                    csrfmiddlewaretoken: '{{ csrf_token }}',
-                    action: 'post'
-                },
-                success: function(response) {
-                    console.log('PDF generado con éxito');
-                    // Manejar la respuesta del servidor aquí
-                    // Por ejemplo, abrir el PDF en una nueva ventana
-                    window.open('/pdf/', '_blank');
-                },
-                error: function(xhr, errmsg, err) {
-                    console.error('Error al generar el PDF:', errmsg);
-                }
-            });
+function guardarHistorialCompra() {
+    $.ajax({
+        type: 'POST',
+        url: '{% url 'guardar_historial_compra' %}',  // Ajusta esta URL según tu configuración
+        data: {
+            csrfmiddlewaretoken: '{{ csrf_token }}',
+            action: 'post'
+        },
+        success: function(response) {
+            console.log('Compra guardada con éxito');
+            // Redireccionar o mostrar un mensaje de éxito al usuario
+            window.location.href = '{% url 'historial_compras' %}';
+        },
+        error: function(xhr, errmsg, err) {
+            console.error('Error al guardar la compra:', errmsg);
         }
+    });
+}
 
 
 </script>

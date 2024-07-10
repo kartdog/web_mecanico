@@ -1,6 +1,7 @@
-from django.shortcuts import render, get_object_or_404
+from django.shortcuts import render, get_object_or_404, redirect
 from django.contrib import messages
 from django.http import JsonResponse
+from .models import *
 from .carro import *
 from tienda.models import *
 import requests
@@ -10,6 +11,10 @@ from django.http import JsonResponse
 from django.contrib.auth.decorators import login_required
 from django.utils.decorators import method_decorator
 from django.views import View
+
+from reportlab.lib.pagesizes import letter
+from django.template.loader import render_to_string
+from reportlab.pdfgen import canvas
 
 from io import BytesIO
 from django.http import HttpResponse
@@ -42,8 +47,16 @@ class Mindicador:
         pretty_json = json.dumps(data, indent=2)
         return data
 
-def carro_detalle(request):
+# Historial
+@login_required
+def historial_compras(request):
+    compras = HistorialCompra.objects.filter(usuario=request.user).order_by('-fecha')
+    contexto = {
+        "compras": compras
+    }
+    return render(request, 'historial.html', contexto)
 
+def carro_detalle(request):
     carro = Carro(request)
     carro_productos = carro.get_producto()
     cantidades = carro.get_cantidades()
@@ -66,29 +79,88 @@ def carro_detalle(request):
 
     return render(request, "carro_detalle.html", contexto)
 
-def generar_pdf(request):
-    carro = Carro(request)
-    carro_productos = carro.get_producto()
-    cantidades = carro.get_cantidades()
-    total = carro.carro_total()
+@login_required
+def guardar_historial_compra(request):
+    if request.method == 'POST':
+        carro = Carro(request)  # Assuming Carro is your cart manager class
+        carro_productos = carro.get_producto()
+        cantidades = carro.get_cantidades()
+        total = carro.carro_total()
 
-    contexto = {
-        "carro_productos": carro_productos,
-        "cantidades": cantidades,
-        "total": total,
-    }
+        # Prepare a list of dictionaries for productos
+        productos_list = []
+        for producto, cantidad in zip(carro_productos, cantidades):
+            productos_list.append({
+                'nombre': producto.nombre,
+                'precio': str(producto.precio_final),  # Convert Decimal to string
+                'cantidad': cantidad,
+            })
 
-    pdf = render_to_pdf('carro_pdf.html', contexto)
+        # Convert total to string
+        total_str = str(total)
 
-    if pdf:
-        response = HttpResponse(pdf, content_type='application/pdf')
-        filename = 'carro_compras.pdf'
-        content = f'attachment; filename="{filename}"'
-        response['Content-Disposition'] = content
+        # Convert contexto to JSON string
+        contexto = {
+            "productos": productos_list,
+            "total": total_str,
+        }
+        
+        # Save the purchase history
+        compra = HistorialCompra(
+            usuario=request.user,
+            productos=json.dumps(contexto),  # Serialize contexto to JSON
+            total=total
+        )
+        compra.save()
+
+        return JsonResponse({"message": "Compra guardada con éxito"})
+
+    return JsonResponse({"error": "Método no permitido"}, status=405)
+
+
+def generar_pdf(request, compra_id=None):
+    if compra_id:
+        # Obtener una compra específica si se proporciona un compra_id
+        compra = get_object_or_404(HistorialCompra, pk=compra_id, usuario=request.user)
+        productos_data = json.loads(compra.productos)
+        
+        # Configurar la respuesta del PDF
+        response = HttpResponse(content_type='application/pdf')
+        response['Content-Disposition'] = f'attachment; filename="boleta_compra_{compra_id}.pdf"'
+        
+        # Inicializar el canvas de ReportLab
+        buffer = BytesIO()
+        c = canvas.Canvas(buffer, pagesize=letter)
+        
+        # Dibujar el contenido del PDF
+        c.drawString(100, 750, 'Boleta de Compra')
+        c.drawString(100, 730, f'Fecha: {compra.fecha.strftime("%d/%m/%Y %H:%M:%S")}')
+        c.drawString(100, 710, f'Usuario: {compra.usuario.username}')
+        c.drawString(100, 690, f'Total: ${compra.total}')
+        
+        # Dibujar los productos de la compra
+        y = 670
+        for producto in productos_data["productos"]:
+            nombre = producto["nombre"]
+            cantidad = producto["cantidad"]
+            precio = producto["precio"]
+            y -= 20
+            c.drawString(120, y, f'Producto: {nombre} - Cantidad: {cantidad} - Precio: ${precio}')
+        
+        # Guardar el PDF y cerrar el canvas
+        c.showPage()
+        c.save()
+        
+        # Obtener el contenido del buffer y escribirlo en la respuesta
+        pdf = buffer.getvalue()
+        buffer.close()
+        response.write(pdf)
+        
         return response
     
-    # Maneja el caso en que no se puede generar el PDF
-    return HttpResponse("Error al generar el PDF", status=500)
+    else:
+        # Si no se proporciona un compra_id, redireccionar o manejar el error según sea necesario
+        return HttpResponse("Error: No se proporcionó un ID de compra válido")
 
 def carro_agregar(request):
     carro = Carro(request)

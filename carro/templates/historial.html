@@ -1,0 +1,44 @@
+{% extends 'base.html' %}
+
+{% block content %}
+<div class="container mt-5">
+    <h2>Historial de Compras</h2>
+    <table class="table table-bordered mt-4">
+        <thead>
+            <tr>
+                <th>Fecha</th>
+                <th>Productos</th>
+                <th>Total</th>
+                <th>Boleta</th>
+            </tr>
+        </thead>
+        <tbody>
+            {% for compra in compras %}
+            <tr>
+                <td>{{ compra.fecha }}</td>
+                <td>
+                    <ul id="productos-{{ forloop.counter }}">
+                        <script>
+                            // Parsear el JSON y mostrar los productos
+                            var productosData = JSON.parse('{{ compra.productos|safe }}');
+                            productosData.productos.forEach(function(producto) {
+                                var li = document.createElement("li");
+                                var cantidad = parseInt(producto.cantidad); // Convertir cantidad a entero
+                                li.textContent = `${producto.nombre} - Cantidad: ${cantidad} - Precio: $${producto.precio}`;
+                                document.getElementById("productos-{{ forloop.counter }}").appendChild(li);
+                            });
+                        </script>
+                    </ul>
+                </td>
+                <td>${{ compra.total }}</td>
+                <td><a class="btn btn-outline-dark mt-auto" href="{% url 'generar_pdf' compra.id %}">Boleta</a></td>
+            </tr>
+            {% empty %}
+            <tr>
+                <td colspan="4">No hay compras realizadas.</td>
+            </tr>
+            {% endfor %}
+        </tbody>
+    </table>
+</div>
+{% endblock %}

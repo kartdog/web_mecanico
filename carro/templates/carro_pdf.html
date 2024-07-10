@@ -1,69 +1,58 @@
-<!-- templates/carro_pdf.html -->
-
 <!DOCTYPE html>
-<html lang="en">
+<html lang="es">
 <head>
     <meta charset="UTF-8">
-    <title>Boleta compra Machá - PDF</title>
+    <title>Boleta de Compra</title>
     <style>
         body {
             font-family: Arial, sans-serif;
+            font-size: 12px;
         }
-        .header, .footer {
-            width: 100%;
-            text-align: center;
-            position: fixed;
-        }
-        .header {
-            top: 0px;
-        }
-        .footer {
-            bottom: 0px;
-        }
-        .content {
-            margin-top: 50px;
-            margin-bottom: 50px;
-        }
-        .card {
-            border: 1px solid #000;
-            padding: 10px;
+        h1 {
+            font-size: 18px;
             margin-bottom: 10px;
         }
-        .card img {
-            max-width: 100px;
-            height: auto;
+        table {
+            width: 100%;
+            border-collapse: collapse;
+            margin-bottom: 20px;
+        }
+        th, td {
+            border: 1px solid #ccc;
+            padding: 8px;
+            text-align: left;
         }
     </style>
 </head>
 <body>
-    <div class="header">
-        <h1>Boleta - Machá</h1>
-        <p>Gracias por comprar en Machá!</p>
-    </div>
-    <div class="content">
-        {% if carro_productos %}
-        {% for producto in carro_productos %}
-        <div class="card">
-            <div>
-                <h5>Producto: {{ producto.nombre }}</h5>
-                <p>Descripción: {{ producto.descripcion }}</p>
-                {% if producto.is_oferta %}
-                    <p><strike>Precio: ${{ producto.precio_final }}</strike> Precio: ${{ producto.oferta_precio }}</p>
-                {% else %}
-                    <p>Precio: ${{ producto.precio_final }}</p>
-                {% endif %}
-            </div>
-        </div>
-        {% endfor %}
-        <h3>Total: ${{ total }}</h3>
-        {% else %}
-        <div>
-            <h3>Tú carrito esta vacío!</h3>
-        </div>
-        {% endif %}
-    </div>
-    <div class="footer">
-        <p>&copy; {{ current_year }}</p>
-    </div>
+    <h1>Boleta de Compra</h1>
+    <p>Fecha de Compra: {{ compra.fecha }}</p>
+    <p>Usuario: {{ compra.usuario.username }}</p>
+    
+    <table>
+        <thead>
+            <tr>
+                <th>Producto</th>
+                <th>Cantidad</th>
+                <th>Precio Unitario</th>
+                <th>Total por Producto</th>
+            </tr>
+        </thead>
+        <tbody>
+            {% for producto in compra.productos.productos %}
+            <tr>
+                <td>{{ producto.nombre }}</td>
+                <td>{{ producto.cantidad }}</td>
+                <td>${{ producto.precio }}</td>
+                <td>${{ producto.cantidad|floatformat:"2" }}</td>
+            </tr>
+            {% endfor %}
+            <tr>
+                <td colspan="3" style="text-align: right;"><strong>Total:</strong></td>
+                <td>${{ compra.total }}</td>
+            </tr>
+        </tbody>
+    </table>
+    
 </body>
 </html>

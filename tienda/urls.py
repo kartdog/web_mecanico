@@ -22,7 +22,7 @@ urlpatterns = [
     path('productos/crud/delete/<id>/', views.productosdelete, name="productosdelete"),
     # Compras
     # path('registrar-compra/', RegistrarCompraView.as_view(), name='registrar_compra'),
-    path('historial-compras/', historial_compras, name='historial_compras'),
+
     # Servicios
     path('servicios/', views.servicios, name="servicios"),
     path('servicios/add/', views.serviciosadd, name="serviciosadd"),
@@ -50,6 +50,4 @@ urlpatterns = [
     path('empleadosapi/', empleadosapi, name="empleadosapi"),
     path('serviciosapi/', serviciosapi, name="serviciosapi"),
     path('productosapi/', productosapi, name="productosapi"),
-    # PDF
-    path('pdf/', generar_pdf, name='generar_pdf'),
 ]
