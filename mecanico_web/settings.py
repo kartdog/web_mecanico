@@ -16,7 +16,7 @@ SECRET_KEY = 'django-insecure-lk+@s%fjp-4&mwr9u1()*hx!r34(rx+wwj-sg=q_xuh0p4m8ar
 DEBUG = True
 
 ALLOWED_HOSTS = ['webmecanico-production.up.railway.app', 'https://webmecanico-production.up.railway.app']
-CSRF_TRUSTED_ORIGINS = ['webmecanico-production.up.railway.app', 'https://webmecanico-production.up.railway.app']
+CSRF_TRUSTED_ORIGINS = ['https://webmecanico-production.up.railway.app']
 
 # Application definition
 
