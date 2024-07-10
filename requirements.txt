@@ -15,4 +15,4 @@ django-multi-captcha-admin
 cloudinary
 whitenoise
 xhtml2pdf
-gunincore
+gunicorn
