@@ -136,6 +136,7 @@ def login_user(request):
     else:
         return render(request, 'login.html', {})
 
+@login_required
 def logout_user(request):
     logout(request)
     messages.success(request, ("Has cerrado la sesión."))
@@ -151,7 +152,7 @@ def register_user(request):
             username = form.cleaned_data['username']
             password = form.cleaned_data['password1']
             # Logea
-            user = authenticate(username=username, password=password)
+            user = authenticate(request, username=username, password=password)
             login(request, user)
             messages.success(request, ("Registrado! Rellena tus datos!"))
             return redirect('actualizar_info')
@@ -165,6 +166,7 @@ def register_user(request):
     return render(request, 'register.html', {'form': form})
 
 # Usuario
+@login_required
 def actualizar_usuario(request):
     if request.user.is_authenticated:
         usuario_actual = User.objects.get(id=request.user.id)
@@ -181,6 +183,7 @@ def actualizar_usuario(request):
         messages.success(request, "Debes iniciar sesión para acceder a esa página.")
         return redirect('index')
 
+@login_required
 def actualizar_info(request):
     if request.user.is_authenticated:
         usuario_actual = Perfil.objects.get(usuario__id=request.user.id)
@@ -227,6 +230,7 @@ def empleadosadd(request):
 
     return render(request, 'tienda/empleados/crud/add.html', aux)
 
+@permission_required('tienda.add_empleado')
 def empleadosupdate(request, id):
     empleado = Empleado.objects.get(id=id)
     aux = {
@@ -260,6 +264,7 @@ def producto_id(request, pk):
     producto = Producto.objects.get(id=pk)
     return render(request, 'producto.html', {'producto': producto})
 
+
 def productos(request):
     productos = Producto.objects.all()
 
@@ -269,6 +274,7 @@ def productos(request):
 
     return render(request, 'tienda/productos/index.html', aux)
 
+@permission_required('tienda.delete_empleado')
 def productosadd(request):
     aux = {
             'form' : ProductoForm()
@@ -330,6 +336,7 @@ def productosdelete(request, id):
     return redirect(to="productos")
 
 # Compras
+@login_required
 def historial_compras(request):
     compras = Compra.objects.filter(usuario=request.user).order_by('-fecha_compra')
     return render(request, 'historial_compras.html', {'compras': compras})

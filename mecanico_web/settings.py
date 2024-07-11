@@ -170,3 +170,12 @@ RECAPTCHA_PRIVATE_KEY = '6LehLfcpAAAAAAHHWP6hxnrnz91zG22cY2yUBjOG'
 MULTI_CAPTCHA_ADMIN = {
     'engine': 'simple-captcha',
 }
+
+# EMAIL
+EMAIL_BACKEND = 'django.core.mail.backends.smtp.EmailBackend'
+EMAIL_HOST = 'smtp.gmail.com'
+EMAIL_USE_TLS = True
+EMAIL_PORT = 587
+EMAIL_HOST_USER = 'paipasted@gmail.com'
+EMAIL_HOST_PASSWORD = 'zcbp yknl vzwc hlwg'
+DEFAULT_FROM_EMAIL = 'paipasted@gmail.com'

@@ -30,7 +30,9 @@
                                 <p class="card-text justify">{{ aux.oferta_precio }}</p>
                                 </center>
                                 &nbsp;
+                                {% if user.is_authenticated %}
                                 <a href="{% url 'producto_id' aux.id %}" class="btn btn-outline-dark mt-auto">Ver producto</a>
+                                {% endif %}
                                 {% if perms.tienda.change_producto %}
                                 <a href="{% url 'productosupdate' aux.id%}" class="btn btn-outline-dark bg-warning mt-3">Actualizar</a>
                                 <a href="{% url 'productosdelete' aux.id%}" class="btn btn-outline-dark bg-danger mt-3">Eliminar</a>
@@ -50,7 +52,9 @@
                                     <p class="card-text justify">{{ aux.precio_final }}</p>
                                     </center>
                                     &nbsp;
+                                    {% if user.is_authenticated %}
                                     <a href="{% url 'producto_id' aux.id %}" class="btn btn-outline-dark mt-auto">Ver producto</a>
+                                    {% endif %}
                                     {% if perms.tienda.change_producto %}
                                 <a href="{% url 'productosupdate' aux.id%}" class="btn btn-outline-dark bg-warning mt-3">Actualizar</a>
                                 <a href="{% url 'productosdelete' aux.id%}" class="btn btn-outline-dark bg-danger mt-3">Eliminar</a>

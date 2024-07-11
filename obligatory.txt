@@ -55,4 +55,10 @@ obligatorio:
 	sb-ib2cy31401957@personal.example.com
 	O=>ivVJ4
 
-	ayLXvztvaFhQycPbPmjmOQYYqouwnxlY
+	'PASSWORD': os.environ['DB_PASSWORD'],
+
+	'PASSWORD': 'ayLXvztvaFhQycPbPmjmOQYYqouwnxlY',
+
+	git add .
+	git commit -am 'boleta, recuperar contra'
+	git push

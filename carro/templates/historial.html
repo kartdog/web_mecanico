@@ -24,7 +24,7 @@
                             productosData.productos.forEach(function(producto) {
                                 var li = document.createElement("li");
                                 var cantidad = parseInt(producto.cantidad); // Convertir cantidad a entero
-                                li.textContent = `${producto.nombre} - Cantidad: ${cantidad} - Precio: $${producto.precio}`;
+                                li.textContent = `${producto.nombre}`;
                                 document.getElementById("productos-{{ forloop.counter }}").appendChild(li);
                             });
                         </script>

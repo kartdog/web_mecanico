@@ -115,9 +115,11 @@
                                     </div>
                                 </div>
                                 <!-- Product actions-->
+                                {% if user.is_authenticated %}
                                 <div class="card-footer p-4 pt-0 border-top-0 bg-transparent">
                                     <div class="text-center"><a class="btn btn-outline-dark mt-auto" href="{% url 'producto_id' producto.id %}">Ver producto</a></div>
                                 </div>
+                                {% endif %}
                             </div>
                         </div>
                     {% else %}
@@ -136,7 +138,9 @@
                                 </div>
                                 <!-- Product actions-->
                                 <div class="card-footer p-4 pt-0 border-top-0 bg-transparent">
+                                    {% if user.is_authenticated %}
                                     <div class="text-center"><a class="btn btn-outline-dark mt-auto" href="{% url 'producto_id' producto.id %}">Ver producto</a></div>
+                                    {% endif %}
                                 </div>
                             </div>
                         </div>

@@ -3,6 +3,7 @@ from rest_framework import routers
 from . import views
 from .views import *
 from carro.views import generar_pdf
+from django.contrib.auth import views as auth_views
 
 # Configuracion urls para API
 router = routers.DefaultRouter()
@@ -20,9 +21,6 @@ urlpatterns = [
     path('productos/add/', views.productosadd, name="productosadd"),
     path('productos/crud/update/<id>/', views.productosupdate, name="productosupdate"),
     path('productos/crud/delete/<id>/', views.productosdelete, name="productosdelete"),
-    # Compras
-    # path('registrar-compra/', RegistrarCompraView.as_view(), name='registrar_compra'),
-
     # Servicios
     path('servicios/', views.servicios, name="servicios"),
     path('servicios/add/', views.serviciosadd, name="serviciosadd"),
@@ -31,6 +29,7 @@ urlpatterns = [
     # Categorias
     path('categoria/<str:foo>', views.categoria, name = 'categoria'),
     # Login
+    path('accounts/login/', views.login_user, name= 'accounts/login/'),
     path('login/', views.login_user, name = 'login'),
     path('logout/', views.logout_user, name = 'logout'),
     # AXES
@@ -50,4 +49,9 @@ urlpatterns = [
     path('empleadosapi/', empleadosapi, name="empleadosapi"),
     path('serviciosapi/', serviciosapi, name="serviciosapi"),
     path('productosapi/', productosapi, name="productosapi"),
+    # Recuperar contraseña
+    path('reset_password/', auth_views.PasswordResetView.as_view(), name='password_reset'),  # Reset de contraseña
+    path('reset_password_send/', auth_views.PasswordResetDoneView.as_view(), name='password_reset_done'),  # Confirmación de envío de reset
+    path('reset/<uidb64>/<token>/', auth_views.PasswordResetConfirmView.as_view(), name='password_reset_confirm'),  # Confirmación de reset
+    path('reset_password_complete/', auth_views.PasswordResetCompleteView.as_view(), name='password_reset_complete'),  # Completado de reset    
 ]

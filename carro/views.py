@@ -15,6 +15,9 @@ from django.views import View
 from reportlab.lib.pagesizes import letter
 from django.template.loader import render_to_string
 from reportlab.pdfgen import canvas
+from reportlab.platypus import Table, TableStyle
+from reportlab.lib import colors
+from reportlab.lib.units import inch
 
 from io import BytesIO
 from django.http import HttpResponse
@@ -82,30 +85,26 @@ def carro_detalle(request):
 @login_required
 def guardar_historial_compra(request):
     if request.method == 'POST':
-        carro = Carro(request)  # Assuming Carro is your cart manager class
+        carro = Carro(request)  
         carro_productos = carro.get_producto()
         cantidades = carro.get_cantidades()
         total = carro.carro_total()
 
-        # Prepare a list of dictionaries for productos
         productos_list = []
         for producto, cantidad in zip(carro_productos, cantidades):
             productos_list.append({
                 'nombre': producto.nombre,
-                'precio': str(producto.precio_final),  # Convert Decimal to string
+                'precio': str(producto.precio_final),
                 'cantidad': cantidad,
             })
 
-        # Convert total to string
         total_str = str(total)
 
-        # Convert contexto to JSON string
         contexto = {
             "productos": productos_list,
             "total": total_str,
         }
         
-        # Save the purchase history
         compra = HistorialCompra(
             usuario=request.user,
             productos=json.dumps(contexto),  # Serialize contexto to JSON
@@ -132,20 +131,45 @@ def generar_pdf(request, compra_id=None):
         buffer = BytesIO()
         c = canvas.Canvas(buffer, pagesize=letter)
         
-        # Dibujar el contenido del PDF
-        c.drawString(100, 750, 'Boleta de Compra')
-        c.drawString(100, 730, f'Fecha: {compra.fecha.strftime("%d/%m/%Y %H:%M:%S")}')
-        c.drawString(100, 710, f'Usuario: {compra.usuario.username}')
-        c.drawString(100, 690, f'Total: ${compra.total}')
+        # Dibujar el título y la información del usuario
+        c.drawString(100, 730, 'Boleta de Compra')
+        c.drawString(100, 710, f'Fecha: {compra.fecha.strftime("%d/%m/%Y %H:%M:%S")}')
+        c.drawString(100, 690, f'Usuario: {compra.usuario.username}')
         
-        # Dibujar los productos de la compra
-        y = 670
+        # Definir el contenido de la tabla
+        data = [['Producto', 'Precio', 'Cantidad']]
         for producto in productos_data["productos"]:
             nombre = producto["nombre"]
-            cantidad = producto["cantidad"]
             precio = producto["precio"]
-            y -= 20
-            c.drawString(120, y, f'Producto: {nombre} - Cantidad: {cantidad} - Precio: ${precio}')
+            cantidad = producto["cantidad"]
+            data.append([nombre, precio, cantidad])
+        
+        # Crear la tabla
+        table = Table(data, colWidths=[2.5 * inch, 1.5 * inch, 1 * inch])
+        
+        # Establecer el estilo de la tabla
+        style = TableStyle([
+            ('BACKGROUND', (0, 0), (-1, 0), colors.grey),
+            ('TEXTCOLOR', (0, 0), (-1, 0), colors.whitesmoke),
+            ('ALIGN', (0, 0), (-1, -1), 'CENTER'),
+            ('FONTNAME', (0, 0), (-1, 0), 'Helvetica-Bold'),
+            ('BOTTOMPADDING', (0, 0), (-1, 0), 12),
+            ('BACKGROUND', (0, 1), (-1, -1), colors.beige),
+            ('GRID', (0, 0), (-1, -1), 1, colors.black),
+        ])
+        table.setStyle(style)
+        
+        # Dibujar la tabla en el PDF
+        table.wrapOn(c, 400, 300)
+        table.drawOn(c, 100, 500)
+        
+        # Dibujar un rectángulo alrededor del contenido
+        c.setStrokeColor(colors.black)
+        c.setLineWidth(1)
+        c.rect(90, 490, 420, 260)
+        
+        # Dibujar el total de la compra
+        c.drawString(100, 470, f'Total: ${compra.total}')
         
         # Guardar el PDF y cerrar el canvas
         c.showPage()

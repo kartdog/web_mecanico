@@ -66,7 +66,7 @@ class Carro():
     def get_cantidades(self):
         cantidades = self.carro
         return cantidades
-    
+
     def actualizar(self, producto, cantidad):
         producto_id = str(producto)
         producto_qty = int(cantidad)

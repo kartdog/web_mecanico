@@ -132,9 +132,7 @@
       return actions.payment.execute().then(function () {
         // Show a confirmation message to the buyer
         guardarHistorialCompra();
-        //window.alert('Gracias por tú compra!');
-        // Ejecutar la eliminación del carrito después de mostrar el mensaje
-        // eliminarCarrito();
+        eliminarCarrito();
 });
 }
 }, '#paypal-button');
