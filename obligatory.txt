@@ -59,6 +59,8 @@ obligatorio:
 
 	'PASSWORD': 'ayLXvztvaFhQycPbPmjmOQYYqouwnxlY',
 
+	redeploy
+
 	git add .
 	git commit -am 'motivo'
 	git push
