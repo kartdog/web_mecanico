@@ -66,6 +66,7 @@ def historial_compras(request):
     }
     return render(request, 'historial.html', contexto)
 
+@login_required
 def carro_detalle(request):
     carro = Carro(request)
     carro_productos = carro.get_producto()
