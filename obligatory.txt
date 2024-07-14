@@ -60,5 +60,5 @@ obligatorio:
 	'PASSWORD': 'ayLXvztvaFhQycPbPmjmOQYYqouwnxlY',
 
 	git add .
-	git commit -am 'boleta, recuperar contra'
+	git commit -am 'motivo'
 	git push

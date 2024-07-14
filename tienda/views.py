@@ -63,7 +63,7 @@ class ProductoViewSet(viewsets.ModelViewSet):
 
 # Métodos para listar desde API.
 def empleadosapi(request):
-    response = requests.get('http://127.0.0.1:8000/api/empleados/')
+    response = requests.get('https://webmecanico-production-ef90.up.railway.app/api/empleados/')
     empleados = response.json()
 
     aux = {
@@ -73,7 +73,7 @@ def empleadosapi(request):
     return render(request, 'tienda/empleados/crudapi/index.html', aux)
 
 def serviciosapi(request):
-    response = requests.get(f'http://127.0.0.1:8000/api/servicios/')
+    response = requests.get(f'https://webmecanico-production-ef90.up.railway.app/api/servicios/')
     servicios = response.json()
 
     aux = {
@@ -83,7 +83,7 @@ def serviciosapi(request):
     return render(request, 'tienda/servicios/crudapi/index.html', aux)
 
 def productosapi(request):
-    response = requests.get('http://127.0.0.1:8000/api/productos/')
+    response = requests.get('https://webmecanico-production-ef90.up.railway.app/api/productos/')
     productos = response.json()
 
     paginator = Paginator(productos, 4)
@@ -260,6 +260,7 @@ def empleadosdelete(request, id):
     return redirect(to="empleados")
 
 # Producto
+@login_required
 def producto_id(request, pk):
     producto = Producto.objects.get(id=pk)
     return render(request, 'producto.html', {'producto': producto})
@@ -351,7 +352,7 @@ def servicios(request):
 
     return render(request, 'tienda/servicios/index.html', aux)
 
-@login_required
+@permission_required('core.change_servicio')
 def serviciosadd(request):
     aux = {
             'form' : ServicioForm()

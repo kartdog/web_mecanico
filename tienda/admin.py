@@ -8,15 +8,47 @@ class EmpleadoAdmin(AdminConfirmMixin, ModelAdmin):
     confirm_change = True
     confirmation_fields = ['nombre','tipo','imagen']
 
-admin.site.register(Cliente)
-admin.site.register(Perfil)
+class ProductoAdmin(AdminConfirmMixin, ModelAdmin):
+    confirm_change = True
+    confirmation_fields = ['nombre','precio_final','descripcion']
 
-admin.site.register(Categoria)
-admin.site.register(Producto)
-admin.site.register(Servicio)
-admin.site.register(Orden)
-admin.site.register(Compra)
-admin.site.register(CompraProducto)
+class ServicioAdmin(AdminConfirmMixin, ModelAdmin):
+    confirm_change = True
+    confirmation_fields = ['nombre_servicio','descripcion_servicio','imagen_servicio']
+
+class CategoriaAdmin(AdminConfirmMixin, ModelAdmin):
+    confirm_change = True
+    confirmation_fields = ['nombre']
+
+class ClienteAdmin(AdminConfirmMixin, ModelAdmin):
+    confirm_change = True
+    confirmation_fields = ['p_nombre', 's_nombre', 'telefono', 'email', 'password']
+
+class PerfilAdmin(AdminConfirmMixin, ModelAdmin):
+    confirm_change = True
+    confirmation_fields = ['usuario', 'date_modified', 'telefono', 'direccion', 'direccion_dos', 'ciudad', 'comuna', 'zipcode', 'pais', 'carrito_viejo']
+
+class OrdenAdmin(AdminConfirmMixin, ModelAdmin):
+    confirm_change = True
+    confirmation_fields = ['producto', 'cliente', 'cantidad', 'direccion', 'telefono', 'fecha', 'status']
+
+class CompraAdmin(AdminConfirmMixin, ModelAdmin):
+    confirm_change = True
+    confirmation_fields = ['usuario', 'productos', 'total_pagado', 'fecha_compra']
+
+class CompraProductoAdmin(AdminConfirmMixin, ModelAdmin):
+    confirm_change = True
+    confirmation_fields = ['compra', 'producto', 'cantidad', 'precio']
+
+admin.site.register(Cliente, ClienteAdmin)
+admin.site.register(Perfil, PerfilAdmin)
+
+admin.site.register(Categoria, CategoriaAdmin)
+admin.site.register(Producto, ProductoAdmin)
+admin.site.register(Servicio, ServicioAdmin)
+admin.site.register(Orden, OrdenAdmin)
+admin.site.register(Compra, CompraAdmin)
+admin.site.register(CompraProducto, CompraProductoAdmin)
 
 admin.site.register(Empleado, EmpleadoAdmin)
 

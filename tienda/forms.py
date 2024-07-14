@@ -8,6 +8,8 @@ from .models import *
 
 # Usuario
 class UserInfoForm(forms.ModelForm):
+    captcha = CaptchaField()
+
     telefono = forms.CharField(label="", widget=forms.TextInput(attrs={'class':'form-control', 'placeholder':'Telefono'}), required=False)
     direccion = forms.CharField(label="", widget=forms.TextInput(attrs={'class':'form-control', 'placeholder':'Dirección 1'}), required=False)
     direccion_dos = forms.CharField(label="", widget=forms.TextInput(attrs={'class':'form-control', 'placeholder':'Dirección 2'}), required=False)

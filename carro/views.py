@@ -24,6 +24,8 @@ from django.http import HttpResponse
 from django.template.loader import get_template
 from xhtml2pdf import pisa
 
+from django.core.paginator import Paginator
+
 # Render
 def render_to_pdf(template_src, context_dict={}):
     template = get_template(template_src)
@@ -54,6 +56,11 @@ class Mindicador:
 @login_required
 def historial_compras(request):
     compras = HistorialCompra.objects.filter(usuario=request.user).order_by('-fecha')
+
+    paginator = Paginator(compras, 4)
+    page_number = request.GET.get('page')
+    compras = paginator.get_page(page_number)
+
     contexto = {
         "compras": compras
     }
@@ -91,7 +98,9 @@ def guardar_historial_compra(request):
         total = carro.carro_total()
 
         productos_list = []
-        for producto, cantidad in zip(carro_productos, cantidades):
+        for producto in carro_productos:
+            producto_id = str(producto.id)
+            cantidad = cantidades.get(producto_id, 0)
             productos_list.append({
                 'nombre': producto.nombre,
                 'precio': str(producto.precio_final),
@@ -115,6 +124,7 @@ def guardar_historial_compra(request):
         return JsonResponse({"message": "Compra guardada con éxito"})
 
     return JsonResponse({"error": "Método no permitido"}, status=405)
+
 
 
 def generar_pdf(request, compra_id=None):
